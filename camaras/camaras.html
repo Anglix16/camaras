@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        function extraerCamaras() {
+            var obj_peticion = new XMLHttpRequest();
+            obj_peticion.onreadystatechange = function (){
+                if (obj_peticion.status == 200 && obj_peticion.readyState == 4) {
+                    pintarTabla (obj_peticion.responseXML);
+                }
+            }
+        
+            obj_peticion.open("GET","camaras.xml");
+            obj_peticion.send();
+        }
+
+        function pintarTabla(xml){
+            var num_latitud = xml.getElementsByTagName("Latitud");
+            var num_longitud = xml.getElementsByTagName("Longitud");
+            var ruta = xml.getElementsByTagName ("URL");
+            var tabla = document.createElement ("table");
+            for (let i = 0; i < num_latitud.length; i++) {
+                var fila = document.createElement("tr");
+                var celda_latitud = document.createElement("td");
+                var celda_longitud = document.createElement("td");
+                var celda_imagen = document.createElement("td");
+                var obj_imagen = document.createElement("img");
+
+                var lati = num_latitud[i].childNodes[0].nodeValue;
+                var longi = num_longitud[i].childNodes[0].nodeValue;
+                var ruta_imag = ruta[i].childNodes[0].nodeValue;
+                
+                obj_imagen.src = "https://"+ruta_imag;
+                celda_latitud.innerHTML = lati;
+                celda_longitud.innerHTML = longi;
+                
+                celda_imagen.appendChild(obj_imagen);
+                fila.appendChild(celda_latitud);
+                fila.appendChild(celda_longitud);
+                fila.appendChild(celda_imagen);
+                tabla.appendChild(fila);
+                
+                
+            }
+            document.getElementById("contenedor").appendChild(tabla);
+        }
+
+    </script>
+
+
+</head>
+<body onload="extraerCamaras()">
+    <div id = "contenedor">
+
+    </div>
+    
+</body>
+</html>
